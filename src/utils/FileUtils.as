@@ -13,7 +13,16 @@ package utils
 
 	public class FileUtils
 	{
-		static public function loadLocalFileWidthString(path:String):String
+		static public function loadStringWidthFile(file:File):String
+		{
+			var f:FileStream = new FileStream();
+			f.open(file, FileMode.READ)
+			var str:String = f.readUTFBytes(f.bytesAvailable);
+			f.close();
+			return str;
+		}
+		
+		static public function loadStringWidthPath(path:String):String
 		{
 			var file:File = File.applicationDirectory.resolvePath(path);
 			var f:FileStream = new FileStream();
@@ -68,14 +77,31 @@ package utils
 			{
 				return;
 			}
+			
 			var byteArray:ByteArray = zip.encode();
-			path = path + ".zip";
-			var file:File = new File(path);
+			var fullPath:String = path + ".zip";
+			var file:File = new File(fullPath);
 			var fileStream:FileStream = new FileStream();
 			fileStream.open(file, FileMode.WRITE);
 			fileStream.writeBytes(byteArray, 0, byteArray.length);
 			fileStream.close();
-			return;
+		}
+		
+		/**
+		 * 保存文件到path文件夹下
+		 */
+		public static function saveStringToPath(source:String, path:String) : void
+		{
+			if (source == "" || path == "")
+			{
+				return;
+			}
+			
+			var file:File = new File(path);
+			var fileStream:FileStream = new FileStream();
+			fileStream.open(file, FileMode.WRITE);
+			fileStream.writeUTFBytes(source);
+			fileStream.close();
 		}
 		
 		/**
@@ -106,6 +132,7 @@ package utils
 						data.fileName = fileItem.name;
 						data.selected = false;
 						data.filePath = fileItem.nativePath;
+						data.file = fileItem;
 						checkoutList.push(data);
 					}
 				}
@@ -133,6 +160,7 @@ package utils
 							data.fileName = fileItem.name;
 							data.selected = false;
 							data.filePath = fileItem.nativePath;
+							data.file = fileItem;
 							checkoutList.push(data);
 						}
 					}
@@ -157,10 +185,8 @@ package utils
 			var _loc_12:File = null;
 			var _loc_13:File = null;
 			var _loc_14:String = null;
-			var devicePlistFile:File = null;
-			var devicePlistStream:FileStream = null;
 			var str:String = null;
-			var devicePlistXML:XML = null;
+			var devicePlistObj:Object = null;
 			var runtimeVer:String = null;
 			var data:Object = null;
 			var _loc_21:String = null;
@@ -202,18 +228,14 @@ package utils
 							}
 							if (_loc_8.length > 0)
 							{
-								devicePlistFile = File.applicationDirectory.resolvePath(_loc_4.nativePath + "/device.plist");
-								devicePlistStream = new FileStream();
-								devicePlistStream.open(devicePlistFile, FileMode.READ);
-								str = devicePlistStream.readUTFBytes(devicePlistStream.bytesAvailable);
-								devicePlistXML = ParserPlist.parser(str);
-								devicePlistStream.close();
-								runtimeVer = String(devicePlistXML.dict.runtime);
+								str = FileUtils.loadStringWidthPath(_loc_4.nativePath + "/device.plist");
+								devicePlistObj = ParserPlist.parserPlistToObject(str);
+								runtimeVer = String(devicePlistObj.runtime);
 								runtimeVer = runtimeVer.replace("com.apple.CoreSimulator.SimRuntime.iOS-", "");
 								runtimeVer = MString.replaceStr(runtimeVer, "-", ".");
 								data = {};
 								data.filePath = _loc_4.nativePath;
-								data.label = String(devicePlistXML.dict.name) + " [" + runtimeVer + "]";
+								data.label = String(devicePlistObj.name) + " [" + runtimeVer + "]";
 								data.paths = _loc_7;
 								data.bundles = [];
 								checkoutList.push(data);

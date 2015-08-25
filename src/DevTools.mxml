@@ -5,7 +5,7 @@
 					   xmlns:mxml="robotlegs.bender.mxml.*" 
 					   xmlns:mvcs="robotlegs.bender.bundles.mvcs.*"
 					   xmlns:core="core.*"
-					   initialize="init()">
+					   initialize="init()" xmlns:view="core.view.*">
 	<fx:Declarations>
 		<mxml:ContextBuilderTag id="contextTag">
 			<mvcs:MVCSBundle/>
@@ -14,11 +14,14 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import utils.parser.ParserCCB;
+			import utils.parser.ParserLangKey;
 			public function init():void
 			{
-				var ccb:ParserCCB = new ParserCCB();
+				var paser:ParserLangKey = new ParserLangKey();
+				paser.setPath("/Users/funplus/Documents/workspace/familyfarm2-client-code/FamilyFarm");
 			}
 		]]>
 	</fx:Script>
+	<view:MainView/>
+	<view:SimulatorDirView/>
 </s:WindowedApplication>

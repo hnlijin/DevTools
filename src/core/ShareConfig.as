@@ -2,7 +2,11 @@ package core
 {
 	import flash.events.IEventDispatcher;
 	
+	import core.mediator.MainMediator;
+	import core.mediator.SimulatorDirMediator;
 	import core.model.AppModel;
+	import core.view.MainView;
+	import core.view.SimulatorDirView;
 	
 	import robotlegs.bender.extensions.eventCommandMap.api.IEventCommandMap;
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
@@ -11,13 +15,6 @@ package core
 	
 	public final class ShareConfig implements IConfig
 	{
-		//
-		public static const HOST:String = "_DragonBonesDesignPanelLocalConnection";
-		
-		//
-		public static const IMPORT_MODEL:String = "importModel";
-		public static const EXPORT_MODEL:String = "exportModel";
-		
 		[Inject]
 		public var injector:IInjector;
 		
@@ -42,9 +39,9 @@ package core
 			
 			injector.map(core.model.AppModel).toValue(appModel);
 			
-			
 			//view
-//			mediatorMap.map(core.view.AnimationControlView).toMediator(core.mediator.AnimationControlViewMediator);
+			mediatorMap.map(core.view.SimulatorDirView).toMediator(core.mediator.SimulatorDirMediator);
+			mediatorMap.map(core.view.MainView).toMediator(core.mediator.MainMediator);
 			
 			
 			//controller

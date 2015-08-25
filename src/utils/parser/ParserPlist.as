@@ -4,11 +4,11 @@ package utils.parser
 
 	public class ParserPlist
 	{
-		static public function parser(xml:String):XML
+		static public function parserPlistToObject(xml:String):Object
 		{
 			var plist10:Plist10 = new Plist10();
 			plist10.parse(xml);
-			return plist10.xml;
+			return plist10.root;
 		}
 	}
 }
