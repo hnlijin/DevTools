@@ -1,10 +1,12 @@
 package utils.parser
 {
+	import flash.events.DataEvent;
+	import flash.events.EventDispatcher;
 	import flash.filesystem.File;
 	
 	import utils.FileUtils;
 
-	public class ParserLangKey
+	public class ParserLangKey extends EventDispatcher
 	{	
 		private static const startupIgnoreNotes:Boolean = false;
 		
@@ -128,12 +130,12 @@ package utils.parser
 				var fileItem:File = item.file;
 				if (fileItem != null)
 				{
-					trace(fileItem.name);
+					dispatchEvent(new DataEvent("parser_log", false, false, file.name));
 					
 					if (fileItem.extension == "cpp" || fileItem.extension == "mm" || fileItem.extension == "m")
 					{
 						var cppStr:String = FileUtils.loadStringWidthFile(fileItem);
-						parserCPPFile(cppStr, _stringList, _defineDict, _errList);
+						parserCPPFile(cppStr, _stringList, _defineDict, _errList, startupIgnoreNotes);
 					}
 					else if (fileItem.extension == "lua")
 					{
@@ -168,7 +170,7 @@ package utils.parser
 					var tempFile:File = obj.file;
 					if (tempFile != null)
 					{
-						trace(tempFile.name);
+						dispatchEvent(new DataEvent("parser_log", false, false, tempFile.name));
 						
 						var str:String = FileUtils.loadStringWidthFile(tempFile);
 						var findIndex:int = str.indexOf(diffKey);
@@ -199,7 +201,7 @@ package utils.parser
 				else if (file.extension == "h")
 				{
 					var headStr:String = FileUtils.loadStringWidthFile(file);
-					parserHeadFile(headStr, _defineDict);
+					parserHeadFile(headStr, _defineDict, startupIgnoreNotes);
 				}
 				else if (file.extension == "lua")
 				{
@@ -242,7 +244,7 @@ package utils.parser
 			{
 				var arr1:Array = source.match(regExp1);
 				
-				if (arr1 != null) flag = true;
+				if (arr1 != null || arr1.length > 0) flag = true;
 				
 				for each(var item1:String in arr1)
 				{
@@ -279,7 +281,7 @@ package utils.parser
 			}
 		}
 		
-		static public function parserCPPFile(source:String, stringList:Object, headDefineDict:Object, errList:Object):void
+		static public function parserCPPFile(source:String, stringList:Object, headDefineDict:Object, errList:Object, ignoreNotes:Boolean):void
 		{
 			var lines:Array = source.split(LINE_BREAK);
 			var skipParser:Boolean = false;
@@ -296,11 +298,11 @@ package utils.parser
 				{
 					continue;
 				}
-				else if (line.indexOf("/*") >= 0 && startupIgnoreNotes == true)
+				else if (line.indexOf("/*") >= 0 && ignoreNotes == true)
 				{
 					skipParser = true;
 				}
-				else if (line.indexOf("//") >= 0 && startupIgnoreNotes == true)
+				else if (line.indexOf("//") >= 0 && ignoreNotes == true)
 				{
 					continue;
 				}
@@ -311,7 +313,7 @@ package utils.parser
 					parserCPPLine(line, stringList, headDefineDict, cppDefineDict, errList);
 				}
 				
-				if (line.indexOf("*/") >= 0 && startupIgnoreNotes == true)
+				if (line.indexOf("*/") >= 0 && ignoreNotes == true)
 				{
 					skipParser = false;
 				}
@@ -326,7 +328,7 @@ package utils.parser
 			{
 				var arr1:Array = source.match(regExp1);		
 				
-				if (arr1 == null) continue;
+				if (arr1 == null || arr1.length == 0) continue;
 				
 				flag = true;
 				
@@ -363,7 +365,7 @@ package utils.parser
 			{
 				var arr2:Array = source.match(regExp2);
 				
-				if (arr2 == null) continue;
+				if (arr2 == null || arr2.length == 0) continue;
 				
 				flag = true;
 				
@@ -430,7 +432,7 @@ package utils.parser
 			}
 		}
 		
-		static public function parserHeadFile(source:String, defineDict:Object):void
+		static public function parserHeadFile(source:String, defineDict:Object, ignoreNotes:Boolean):void
 		{
 			var lines:Array = source.split(LINE_BREAK);
 			var skipParser:Boolean = false;
@@ -441,11 +443,11 @@ package utils.parser
 				{
 					continue;
 				}
-				else if (line.indexOf("/*") >= 0 && startupIgnoreNotes == true)
+				else if (line.indexOf("/*") >= 0 && ignoreNotes == true)
 				{
 					skipParser = true;
 				}
-				else if (line.indexOf("//") >= 0 && startupIgnoreNotes == true)
+				else if (line.indexOf("//") >= 0 && ignoreNotes == true)
 				{
 					continue;
 				}
@@ -455,7 +457,7 @@ package utils.parser
 					parserDefineLine(line, defineDict);
 				}
 				
-				if (line.indexOf("*/") >= 0 && startupIgnoreNotes == true)
+				if (line.indexOf("*/") >= 0 && ignoreNotes == true)
 				{
 					skipParser = false;
 				}

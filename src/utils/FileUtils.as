@@ -15,20 +15,28 @@ package utils
 	{
 		static public function loadStringWidthFile(file:File):String
 		{
-			var f:FileStream = new FileStream();
-			f.open(file, FileMode.READ)
-			var str:String = f.readUTFBytes(f.bytesAvailable);
-			f.close();
-			return str;
+			if (file.exists == true)
+			{
+				var f:FileStream = new FileStream();
+				f.open(file, FileMode.READ)
+				var str:String = f.readUTFBytes(f.bytesAvailable);
+				f.close();
+				return str;
+			}
+			return "";
 		}
 		
 		static public function loadStringWidthPath(path:String):String
 		{
 			var file:File = File.applicationDirectory.resolvePath(path);
-			var f:FileStream = new FileStream();
-			f.open(file, FileMode.READ)
-			var str:String = f.readUTFBytes(f.bytesAvailable);
-			f.close();
+			var str:String = "";
+			if (file.exists == true)
+			{
+				var f:FileStream = new FileStream();
+				f.open(file, FileMode.READ)
+				str = f.readUTFBytes(f.bytesAvailable);
+				f.close();
+			}
 			return str;
 		}
 		
@@ -121,6 +129,8 @@ package utils
 				
 				if (fileItem.isDirectory == true)
 				{
+					if (condition != null) condition(fileItem);
+					
 					recursiveCheckoutFile(fileItem, checkoutList, extension, condition);
 					continue;
 				}

@@ -1,10 +1,10 @@
-package mananger
+package core.manager
 {
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	
-	public class LocalDataMananger extends Object
+	public class LocalDataMananger
 	{
 		private var _localData:Object;
 		private static var _instance:LocalDataMananger = null;
@@ -18,7 +18,6 @@ package mananger
 				throw new Error("LocalDataMananger is Simple Instance!!!");
 			}
 			this.readLocalData();
-			return;
 		}
 		
 		private function readLocalData() : void
@@ -44,25 +43,23 @@ package mananger
 				}
 				fs.close();
 			}
-			return;
 		}
 		
-		public function getLocalData(param1:String, param2:Object = null) : Object
+		public function getLocalData(key:String, value:Object = null) : Object
 		{
-			if (this._localData != null && this._localData[param1] != null)
+			if (this._localData != null && this._localData[key] != null)
 			{
-				return this._localData[param1];
+				return this._localData[key];
 			}
-			return param2;
+			return value;
 		}
 		
-		public function setLocalData(param1:String, param2:Object) : void
+		public function setLocalData(key:String, value:Object) : void
 		{
 			if (this._localData != null)
 			{
-				this._localData[param1] = param2;
+				this._localData[key] = value;
 			}
-			return;
 		}
 		
 		public function saveLocalData() : void
@@ -73,7 +70,6 @@ package mananger
 			fileStream.open(writefile, FileMode.WRITE);
 			fileStream.writeMultiByte(JSON.stringify(this._localData), "utf-8");
 			fileStream.close();
-			return;
 		}
 		
 		public static function getInstance() : LocalDataMananger
@@ -84,6 +80,5 @@ package mananger
 			}
 			return _instance;
 		}
-		
 	}
 }

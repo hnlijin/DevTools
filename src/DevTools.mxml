@@ -4,7 +4,7 @@
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   xmlns:mxml="robotlegs.bender.mxml.*" 
 					   xmlns:mvcs="robotlegs.bender.bundles.mvcs.*"
-					   xmlns:core="core.*"
+					   xmlns:core="core.*" minWidth="1024" minHeight="768"
 					   initialize="init()" xmlns:view="core.view.*">
 	<fx:Declarations>
 		<mxml:ContextBuilderTag id="contextTag">
@@ -14,14 +14,11 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import utils.parser.ParserLangKey;
 			public function init():void
 			{
-				var paser:ParserLangKey = new ParserLangKey();
-				paser.setPath("/Users/funplus/Documents/workspace/familyfarm2-client-code/FamilyFarm");
+//				new utils.parserParserLangKey().setPath("/Users/funplus/Documents/workspace/familyfarm2-client-code/FamilyFarm");
 			}
 		]]>
 	</fx:Script>
 	<view:MainView/>
-	<view:SimulatorDirView/>
 </s:WindowedApplication>

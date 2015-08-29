@@ -6,7 +6,7 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:VGroup>
-		<s:Button id="btnClose" label="关闭"/>
+		<s:Button id="btnClose" label="返回"/>
 		<s:ComboBox id="deviceComboBox"/>
 		<s:ComboBox id="idsComboxBox"/>
 		<s:Button label = "打开"/>

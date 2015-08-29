@@ -9,4 +9,6 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:Button id="btnSyncLua" label="同步LUA" />
+	<s:Button id="btnMultiLangKey" label="多语言统计"/>
+	<s:Button id="btnImageStatistics" label="图片统计" />
 </s:Group>

@@ -35,7 +35,7 @@ package core.mediator
 			view.deviceComboBox.dataProvider = deviceDataList;
 			view.idsComboxBox.dataProvider = idsDataList;
 			
-			view.btnClose.addEventListener(MouseEvent.CLICK, onViewClick);
+			view.addEventListener(MouseEvent.CLICK, onViewClick);
 			
 			var checkoutList:Array = [];
 			FileUtils.checkoutDirWithMacOSSimulator(checkoutList);
@@ -45,7 +45,10 @@ package core.mediator
 		
 		private function onViewClick(evt:MouseEvent):void
 		{
-			
+			if (evt.target == view.btnClose)
+			{
+				view.close();
+			}
 		}
 		
 		private function onDeviceChange(evt:CollectionEvent):void

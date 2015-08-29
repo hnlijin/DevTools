@@ -1,9 +1,5 @@
 package core.suppotClass
 {
-	import flash.display.DisplayObjectContainer;
-	
-	import mx.managers.PopUpManager;
-	
 	import spark.components.Group;
 	
 	import robotlegs.bender.extensions.contextView.ContextView;
@@ -17,14 +13,20 @@ package core.suppotClass
 		{
 		}
 		
-		public function show(parent:DisplayObjectContainer):void
+		public function show(parent:Group):void
 		{
-			PopUpManager.addPopUp(this, parent, true);
+			if (parent != null)
+			{
+				parent.addElement(this);
+			}
 		}
 		
 		public function close():void
 		{
-			
+			if (parent is Group)
+			{
+				(parent as Group).removeElement(this);
+			}
 		}
 	}
 }

@@ -2,10 +2,14 @@ package core
 {
 	import flash.events.IEventDispatcher;
 	
+	import core.mediator.ImageStatisticsMediator;
 	import core.mediator.MainMediator;
+	import core.mediator.MultiLangueKeyMediator;
 	import core.mediator.SimulatorDirMediator;
 	import core.model.AppModel;
+	import core.view.ImageStatisticsView;
 	import core.view.MainView;
+	import core.view.MultiLangueKeyView;
 	import core.view.SimulatorDirView;
 	
 	import robotlegs.bender.extensions.eventCommandMap.api.IEventCommandMap;
@@ -42,6 +46,8 @@ package core
 			//view
 			mediatorMap.map(core.view.SimulatorDirView).toMediator(core.mediator.SimulatorDirMediator);
 			mediatorMap.map(core.view.MainView).toMediator(core.mediator.MainMediator);
+			mediatorMap.map(core.view.ImageStatisticsView).toMediator(core.mediator.ImageStatisticsMediator);
+			mediatorMap.map(core.view.MultiLangueKeyView).toMediator(core.mediator.MultiLangueKeyMediator);
 			
 			
 			//controller
