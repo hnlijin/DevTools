@@ -1,10 +1,11 @@
 package core.mediator
 {
 	import flash.events.MouseEvent;
+	import flash.filesystem.File;
 	
 	import mx.collections.ArrayCollection;
-	import mx.events.CollectionEvent;
-	import mx.messaging.events.ChannelEvent;
+	
+	import spark.events.IndexChangeEvent;
 	
 	import core.view.SimulatorDirView;
 	
@@ -32,15 +33,20 @@ package core.mediator
 		{
 			super.initialize();
 			
+			view.addEventListener(MouseEvent.CLICK, onViewClick);
+			view.deviceComboBox.addEventListener(IndexChangeEvent.CHANGE, onDeviceChange);
+			
 			view.deviceComboBox.dataProvider = deviceDataList;
 			view.idsComboxBox.dataProvider = idsDataList;
 			
-			view.addEventListener(MouseEvent.CLICK, onViewClick);
+			view.deviceComboBox.selectedIndex = 0;
+			view.idsComboxBox.selectedIndex = 0;
 			
 			var checkoutList:Array = [];
 			FileUtils.checkoutDirWithMacOSSimulator(checkoutList);
 			deviceDataList.source = checkoutList;
-			deviceDataList.addEventListener(CollectionEvent.COLLECTION_CHANGE, onDeviceChange);
+			
+			updateIdsComboxBox();
 		}
 		
 		private function onViewClick(evt:MouseEvent):void
@@ -49,18 +55,47 @@ package core.mediator
 			{
 				view.close();
 			}
+			else if (evt.target == view.btnOpenFolder)
+			{
+				var paths:Object = view.deviceComboBox.selectedItem.paths;
+				var id:String = view.idsComboxBox.selectedItem;
+				
+				if (paths && id)
+				{
+					var path:String = paths[id];
+					var file:File = new File();
+					file.nativePath = path;
+					if (file.exists)
+					{
+						file.openWithDefaultApplication();
+					}
+				}
+			}
 		}
 		
-		private function onDeviceChange(evt:CollectionEvent):void
+		private function onDeviceChange(evt:IndexChangeEvent):void
 		{
-			
+			updateIdsComboxBox();
+		}
+		
+		private function updateIdsComboxBox():void
+		{
+			if (view.deviceComboBox.selectedItem.bundles != null)
+			{
+				idsDataList.source = view.deviceComboBox.selectedItem.bundles;
+			}
+			else
+			{
+				idsDataList.source =  [];
+			}
 		}
 		
 		override public function destroy():void
 		{
 			super.destroy();
 			
-			view.btnClose.removeEventListener(MouseEvent.CLICK, onViewClick);
+			view.removeEventListener(MouseEvent.CLICK, onViewClick);
+			view.deviceComboBox.removeEventListener(IndexChangeEvent.CHANGE, onDeviceChange);
 		}
 	}
 }

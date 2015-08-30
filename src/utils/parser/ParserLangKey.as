@@ -3,6 +3,8 @@ package utils.parser
 	import flash.events.DataEvent;
 	import flash.events.EventDispatcher;
 	import flash.filesystem.File;
+	import flash.utils.clearTimeout;
+	import flash.utils.setTimeout;
 	
 	import utils.FileUtils;
 
@@ -105,111 +107,238 @@ package utils.parser
 		private var _stringList:Object = null;
 		private var _errList:Object = null;
 		private var _wuchaList:Object = null;
+		private var _diffList:Array = null;
+		private var _checkoutList:Array = null;
+		private var _checkoutForHeadList:Array = null;
+		
+		private var _locked:Boolean = false;
+		
+		private var _timerId:int = -1;
+		private var _parserIndex:int = 0;
+		
+		private var _wuchaTimerId:int = -1;
+		private var _wuchaParserIndex:int = 0;
+		
+		private var _headTimerId:int = -1;
+		private var _headParserIndex:int = 0;
+		
+		private var _enPlistStrings:Object = null;
 		
 		public function ParserLangKey()
 		{
-			
 		}
 		
-		public function setPath(path:String):void
+		public function isParserComplete():Boolean
 		{
+			return _locked == false;
+		}
+		
+		public function get diffList():Array
+		{
+			return _diffList;
+		}
+		
+		public function get wuchaList():Object
+		{
+			return _wuchaList;
+		}
+		
+		public function get stringList():Object
+		{
+			return _stringList;
+		}
+		
+		public function get errList():Object
+		{
+			return _errList;
+		}
+		
+		public function stopParser():void
+		{
+			_locked = false;
+			
+			clearTimeout(_timerId);
+			_parserIndex = 0;
+			
+			clearTimeout(_wuchaTimerId);
+			_wuchaParserIndex = 0;
+			
+			clearTimeout(_headTimerId);
+			_headParserIndex = 0;
+		}
+		
+		public function parser(path:String, enPlistPath:String):void
+		{
+			if (_locked == true) return;
+			
+			var enPlistStr:String = FileUtils.loadStringWidthPath(enPlistPath);
+			_enPlistStrings = ParserPlist.parserPlistToObject(enPlistStr);
+			
+			if (enPlistStr == "" || _enPlistStrings == null)
+			{
+				dispatchEvent(new DataEvent("parser_error", false, false, "文件" + enPlistPath + "没有找到！"));
+				return;
+			}
+			
+			_locked = true;
 			_defineDict = {};
 			_stringList = {};
 			_errList = {};
 			_wuchaList = {};
+			_checkoutList = [];
+			_diffList = [];
+			_checkoutForHeadList = [];
 			
-			var enPlistStr:String = FileUtils.loadStringWidthPath("en.plist");
-			var enPlist:Object = ParserPlist.parserPlistToObject(enPlistStr);
+			_headParserIndex = 0;
+			_parserIndex = 0;
+			_wuchaParserIndex = 0;
 			
-			var checkoutList:Array = [];
 			var file:File = File.applicationDirectory.resolvePath(path);
-			FileUtils.recursiveCheckoutFile(file, checkoutList, "", checkCondition);
+			FileUtils.recursiveCheckoutFile(file, _checkoutList, "", checkCondition);
 			
-			for each(var item:Object in checkoutList)
-			{
-				var fileItem:File = item.file;
-				if (fileItem != null)
-				{
-					dispatchEvent(new DataEvent("parser_log", false, false, file.name));
-					
-					if (fileItem.extension == "cpp" || fileItem.extension == "mm" || fileItem.extension == "m")
-					{
-						var cppStr:String = FileUtils.loadStringWidthFile(fileItem);
-						parserCPPFile(cppStr, _stringList, _defineDict, _errList, startupIgnoreNotes);
-					}
-					else if (fileItem.extension == "lua")
-					{
-						var luaStr:String = FileUtils.loadStringWidthFile(fileItem);
-						parserLuaFile(luaStr, _stringList, _errList);
-					}
-				}
-			}
-			
-			var diffList:Array = [];
-			var index:int = -1;
-			
-			for(var k:String in enPlist)
-			{
-				if (k.indexOf("/story/") == 0 || k.indexOf("/store/") == 0 || k.indexOf("/event/") == 0 || k.indexOf("/achievement/") == 0 || k.indexOf("/npc/") == 0)
-					continue;
-				
-				if (_stringList[k] == null)
-				{
-					diffList.push(k);
-				}
-			}
-			
-			var diffLen:int = diffList.length;
-			
-			for (var i:int = 0; i < diffLen; i++)
-			{
-				var diffKey:String = '"' + diffList[i] + '"';
-				
-				for each(var obj:Object in checkoutList)
-				{
-					var tempFile:File = obj.file;
-					if (tempFile != null)
-					{
-						dispatchEvent(new DataEvent("parser_log", false, false, tempFile.name));
-						
-						var str:String = FileUtils.loadStringWidthFile(tempFile);
-						var findIndex:int = str.indexOf(diffKey);
-						if (findIndex >= 0)
-						{
-							var tempKey:String = diffList[i];
-							if (_wuchaList.hasOwnProperty(tempKey) == false)
-								_wuchaList[tempKey] = 0;
-							_wuchaList[tempKey] += 1;
-						}
-					}
-				}
-			}
-			
-			FileUtils.saveStringToPath(JSON.stringify(diffList), path + "/diffList.json");
-			FileUtils.saveStringToPath(JSON.stringify(_wuchaList), path + "/wuchaList.json");
-			FileUtils.saveStringToPath(JSON.stringify(_stringList), path + "/stringList.json");
+			parserFileWithHead();
 		}
 		
 		public function checkCondition(file:File):Boolean
 		{
 			if (file != null)
 			{
-				if (file.extension == "cpp" || file.extension == "mm" || file.extension == "m")
+				var extension:String = file.extension;
+				if (extension == "cpp" || extension == "mm" || extension == "m" || extension == "java")
 				{
 					return true;
 				}
-				else if (file.extension == "h")
+				else if (extension == "h")
 				{
-					var headStr:String = FileUtils.loadStringWidthFile(file);
-					parserHeadFile(headStr, _defineDict, startupIgnoreNotes);
+					_checkoutForHeadList.push({file:file});
 				}
-				else if (file.extension == "lua")
+				else if (extension == "lua")
 				{
 					return true;
 				}
 			}
 			
 			return false;
+		}
+		
+		private function parserFileWithHead():void
+		{
+			clearTimeout(_headTimerId);
+			
+			var data:Object = _checkoutForHeadList[_headParserIndex];
+			var file:File = data.file as File;
+			
+			if (file != null)
+			{
+				var extension:String = file.extension;
+				if (extension == "h")
+				{
+					var headStr:String = FileUtils.loadStringWidthFile(file);
+					parserHeadFile(headStr, _defineDict, startupIgnoreNotes);
+				}
+			}
+			
+			dispatchEvent(new DataEvent("parser_item", false, false, file.name));
+			
+			if (_headParserIndex >= _checkoutForHeadList.length - 1)
+			{
+				_parserIndex = 0;
+				parserNextFileWithString();
+			}
+			else
+			{
+				_headParserIndex += 1;
+				_headTimerId = setTimeout(parserFileWithHead, 1 / 100);
+			}
+		}
+		
+		private function parserNextFileWithString():void
+		{
+			clearTimeout(_timerId);
+			
+			var data:Object = _checkoutList[_parserIndex];
+			var file:File = data.file as File;
+			
+			if (file != null)
+			{
+				var extension:String = file.extension;
+				if (extension == "cpp" || extension == "mm" || extension == "m" || extension == "java")
+				{
+					var cppStr:String = FileUtils.loadStringWidthFile(file);
+					parserCPPFile(cppStr, _stringList, _defineDict, _errList, startupIgnoreNotes);
+				}
+				else if (extension == "lua")
+				{
+					var luaStr:String = FileUtils.loadStringWidthFile(file);
+					parserLuaFile(luaStr, _stringList, _errList);
+				}
+			}
+			
+			dispatchEvent(new DataEvent("parser_item", false, false, file.name));
+			
+			if (_parserIndex >= _checkoutList.length - 1)
+			{
+				_parserIndex = 0;
+				_wuchaParserIndex = 0;
+				
+				for(var k:String in _enPlistStrings)
+				{
+					if (k.indexOf("/story/") == 0 || k.indexOf("/store/") == 0 || k.indexOf("/event/") == 0 || k.indexOf("/achievement/") == 0 || k.indexOf("/npc/") == 0)
+						continue;
+					
+					if (_stringList[k] == null)
+					{
+						_diffList.push(k);
+					}
+				}
+				
+				parserFileWithWucha();
+			}
+			else
+			{
+				_parserIndex += 1;
+				_timerId = setTimeout(parserNextFileWithString, 1 / 100);
+			}
+		}
+		
+		private function parserFileWithWucha():void
+		{
+			clearTimeout(_wuchaTimerId);
+			
+			var data:Object = _checkoutList[_wuchaParserIndex];
+			var file:File = data.file as File;
+			
+			if (file != null)
+			{
+				var diffLen:int = _diffList.length;
+				for (var i:int = 0; i < diffLen; i++)
+				{
+					var diffKey:String = '"' + _diffList[i] + '"';
+					var str:String = FileUtils.loadStringWidthFile(file);
+					var findIndex:int = str.indexOf(diffKey);
+					if (findIndex >= 0)
+					{
+						var tempKey:String = _diffList[i];
+						if (_wuchaList.hasOwnProperty(tempKey) == false)
+							_wuchaList[tempKey] = 0;
+						_wuchaList[tempKey] += 1;
+					}
+				}
+			}
+			
+			dispatchEvent(new DataEvent("parser_item", false, false, file.name));
+			
+			if (_wuchaParserIndex >= _checkoutList.length - 1)
+			{
+				_locked = false;
+				_wuchaParserIndex = 0;
+				dispatchEvent(new DataEvent("parser_complete", false, false, ""));
+			}
+			else
+			{
+				_wuchaParserIndex += 1;
+				_wuchaTimerId = setTimeout(parserFileWithWucha, 1 / 100);
+			}
 		}
 		
 		static public function parserLuaFile(source:String, stringList:Object, errList:Object):void

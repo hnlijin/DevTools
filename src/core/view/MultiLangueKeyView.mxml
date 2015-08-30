@@ -5,9 +5,83 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:VGroup>
-		<s:HGroup>
-			<s:Button label="返回" id="btnClose"/>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			public var stringData:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var wuchaStringData:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var nouseStringData:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var checkErrorStringData:ArrayCollection = new ArrayCollection();
+			
+			protected function listCheck_changeHandler(event:IndexChangeEvent):void
+			{
+				if (event.newIndex > 0)
+				{
+					var list:List = event.target as List;
+					txtLog.text = list.dataProvider[event.newIndex];
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:VGroup width="100%" height="100%" gap="0">
+		<s:HGroup top="0">
+			<s:Button id="btnClose" label="返回"/>
+			<s:Button id="btnParser" label="解析"/>
+			<s:Button id="btnParserHistory" label="历史解析"/>
+			<s:Button id="btnSaveFile" label="保存为Json文件" enabled="false"/>
+			<s:Button id="btnSettingPath" label="显示设置目录"/>
 		</s:HGroup>
+		<s:VGroup id="groupPath" width="100%" visible="false" scaleY="0">
+			<s:Line width="100%"/>
+			<mx:HRule width="100%"/>
+			<s:HGroup width="100%" height="25">
+				<s:TextArea text="设置代码根目录:" width="100" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:ComboBox id="txtCodeRootPath" width="100%"/>
+				<s:TextArea id="txtCodeRootPathTip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
+				<s:Button id="btnCodeRootPath" label="添加目录"/>
+				<s:Button id="btnOpenCodeRootPath" label="打开目录"/>
+				<s:Button id="btnDelCodeRootPath" label="删除选择目录"/>
+			</s:HGroup>
+			<s:HGroup width="100%" height="25">
+				<s:TextArea text="设置en.plist路径:" width="100" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:ComboBox id="txtLangEnPath" width="100%"/>
+				<s:TextArea id="txtLangEnPathTip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
+				<s:Button id="btnLangEnPath" label="添加路径"/>
+				<s:Button id="btnOpenLaneEnPath" label="打开路径"/>
+				<s:Button id="btnDelLangEnPath" label="删除选择路径"/>
+			</s:HGroup>
+		</s:VGroup>
+		<s:Line width="100%" height="5"/>
+		<mx:HRule width="100%"/>
+		<s:Line width="100%" height="5"/>
+		<s:TabBar dataProvider="{myViewStack}"/> 
+		<mx:ViewStack id="myViewStack" width="100%" height="100%"> 
+			<s:NavigatorContent label="使用字符串统计" width="100%" height="100%"> 
+				<s:List selectedIndex="0" dataProvider="{stringData}" change="listCheck_changeHandler(event)" width="100%" height="100%"/>
+			</s:NavigatorContent> 
+			
+			<s:NavigatorContent label="未使用字符串统计" width="100%" height="100%"> 
+				<s:List dataProvider="{nouseStringData}" change="listCheck_changeHandler(event)" width="100%" height="100%"/>
+			</s:NavigatorContent> 
+			
+			<s:NavigatorContent label="字符串检查误差统计" width="100%" height="100%"> 
+				<s:List dataProvider="{wuchaStringData}" change="listCheck_changeHandler(event)" width="100%" height="100%"/>
+			</s:NavigatorContent> 
+			
+			<s:NavigatorContent label="字符串检测错误统计" width="100%" height="100%"> 
+				<s:List dataProvider="{checkErrorStringData}" change="listCheck_changeHandler(event)" width="100%" height="100%"/>
+			</s:NavigatorContent> 
+		</mx:ViewStack> 
+		<s:TextArea id="txtLog" text="..." editable="false" height="25" width="100%"/>
 	</s:VGroup>
 </suppotClass:_BaseView>

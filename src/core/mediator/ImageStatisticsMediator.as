@@ -29,9 +29,9 @@ package core.mediator
 		private var _fileCCBRootPath1:File = new File();
 		private var _fileCCBRootPath2:File = new File();
 		
-		private var _defautlCodeRootPath:Array = ["/Users/funplus/Documents/workspace/familyfarm2-client-code/FamilyFarm"];
-		private var _defaultCCBRootPath1:Array = ["/Users/funplus/Documents/workspace/farm2-mobile-asset/develop/UI_CCB_v3/iphone"];
-		private var _defaultCCBRootPath2:Array = ["/Users/funplus/Documents/workspace/farm2-mobile-asset/develop/UI_CCB_lua/iphone"];
+		private var _defautlCodeRootPath:Array = [File.documentsDirectory.nativePath + "/workspace/familyfarm2-client-code/FamilyFarm"];
+		private var _defaultCCBRootPath1:Array = [File.documentsDirectory.nativePath + "/workspace/farm2-mobile-asset/develop/UI_CCB_v3/iphone"];
+		private var _defaultCCBRootPath2:Array = [File.documentsDirectory.nativePath + "/workspace/farm2-mobile-asset/develop/UI_CCB_lua/iphone"];
 		
 		private var _dataCodeRootPath:ArrayCollection = new ArrayCollection();
 		private var _dataCCBRootPath1:ArrayCollection = new ArrayCollection();
@@ -93,20 +93,26 @@ package core.mediator
 			{
 				startParserImage();
 			}
-			else if (evt.target == view.btnSaveDiffPngs)
+			else if (evt.target == view.btnSaveFile)
 			{
-				FileUtils.saveStringToPath(JSON.stringify(_parserImage.plistPngsDiffList), "/Users/funplus/Desktop/plisDiffList.json");
-				FileUtils.saveStringToPath(JSON.stringify(_parserCCB.ccbPngsList), "/Users/funplus/Desktop/ccbPngsList.json");
-				FileUtils.saveStringToPath(JSON.stringify(_parserImage.pngsErrList), "/Users/funplus/Desktop/pngsErrList.json");
-				FileUtils.saveStringToPath(JSON.stringify(_parserImage.codePngsList), "/Users/funplus/Desktop/codePngsList.json");
+				var file:File = new File();
+				file.nativePath = File.desktopDirectory.nativePath + "/check_image";
+				file.createDirectory();
+				
+				FileUtils.saveStringToPath(JSON.stringify(_parserImage.plistPngsDiffList), file.nativePath + "/plisDiffList.json");
+				FileUtils.saveStringToPath(JSON.stringify(_parserCCB.ccbPngsList), file.nativePath + "/ccbPngsList.json");
+				FileUtils.saveStringToPath(JSON.stringify(_parserImage.pngsErrList), file.nativePath + "/pngsErrList.json");
+				FileUtils.saveStringToPath(JSON.stringify(_parserImage.codePngsList), file.nativePath + "/codePngsList.json");
+				
 				view.txtLog.text = "已经保存相关文件到桌面，plisDiffList.json, ccbPngsList.json, pngsErrList.json, codePngsList.json"
 			}
 			else if (evt.target == view.btnParserHistory)
 			{
-				var plistPngsDiffListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/plisDiffList.json");
-				var ccbPngsListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/ccbPngsList.json");
-				var pngsErrListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/pngsErrList.json");
-				var codePngsListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/codePngsList.json");
+				var plistPngsDiffListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/check_image/plisDiffList.json");
+				var ccbPngsListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/check_image/ccbPngsList.json");
+				var pngsErrListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/check_image/pngsErrList.json");
+				var codePngsListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath +  "/check_image/codePngsList.json");
+				var plistPngsListStr:String = FileUtils.loadStringWidthPath(File.applicationStorageDirectory.nativePath + "/check_image/plistPngsList.json");
 				
 				if (plistPngsDiffListStr != "" && ccbPngsListStr != "" && pngsErrListStr != "" && codePngsListStr != "")
 				{
@@ -175,6 +181,7 @@ package core.mediator
 					_indexCodeRootPath = _indexCodeRootPath < 0 ? 0 : _indexCodeRootPath;
 					
 					LocalDataMananger.getInstance().setLocalData("fileCodeRootPath", _dataCodeRootPath.source);
+					LocalDataMananger.getInstance().setLocalData("fileCodeRootPath", _dataCodeRootPath.source);
 					LocalDataMananger.getInstance().saveLocalData();
 					
 					updatePaths();
@@ -189,6 +196,7 @@ package core.mediator
 					_indexCCBRootPath1 = _indexCCBRootPath1 < 0 ? 0 : _indexCCBRootPath1;
 					
 					LocalDataMananger.getInstance().setLocalData("strCCBRootPath1", _dataCCBRootPath1.source);
+					LocalDataMananger.getInstance().setLocalData("indexCCBRootPath1", _indexCCBRootPath1);
 					LocalDataMananger.getInstance().saveLocalData();
 					
 					updatePaths();
@@ -203,6 +211,7 @@ package core.mediator
 					_indexCCBRootPath2 = _indexCCBRootPath2 < 0 ? 0 : _indexCCBRootPath2;
 					
 					LocalDataMananger.getInstance().setLocalData("strCCBRootPath2", _dataCCBRootPath2.source);
+					LocalDataMananger.getInstance().setLocalData("indexCCBRootPath2", _indexCCBRootPath2);
 					LocalDataMananger.getInstance().saveLocalData();
 					
 					updatePaths();
@@ -250,6 +259,7 @@ package core.mediator
 				_indexCodeRootPath = _indexCodeRootPath < 0 ? 0 : _indexCodeRootPath;
 					
 				LocalDataMananger.getInstance().setLocalData("fileCodeRootPath", _dataCodeRootPath.source);
+				LocalDataMananger.getInstance().setLocalData("indexCodeRootPath", _indexCodeRootPath);
 				LocalDataMananger.getInstance().saveLocalData();
 			}
 			else if (evt.target == _fileCCBRootPath1)
@@ -259,6 +269,7 @@ package core.mediator
 				_indexCCBRootPath1 = _indexCCBRootPath1 < 0 ? 0 : _indexCCBRootPath1;
 				
 				LocalDataMananger.getInstance().setLocalData("strCCBRootPath1", _dataCCBRootPath1.source);
+				LocalDataMananger.getInstance().setLocalData("indexCCBRootPath1", _indexCCBRootPath1);
 				LocalDataMananger.getInstance().saveLocalData();
 			}
 			else if (evt.target == _fileCCBRootPath2)
@@ -268,6 +279,7 @@ package core.mediator
 				_indexCCBRootPath2 = _indexCCBRootPath2 < 0 ? 0 : _indexCCBRootPath2;
 				
 				LocalDataMananger.getInstance().setLocalData("strCCBRootPath2", _dataCCBRootPath2.source);
+				LocalDataMananger.getInstance().setLocalData("indexCCBRootPath2", _indexCCBRootPath2);
 				LocalDataMananger.getInstance().saveLocalData();
 			}
 			
@@ -340,24 +352,24 @@ package core.mediator
 			{
 				_parserImage.comparePngs(_parserCCB.ccbPngsList);
 				view.btnParser.enabled = true;
-				view.btnSaveDiffPngs.enabled = true;
+				view.btnSaveFile.enabled = true;
 				view.btnParserHistory.enabled = true;
 				view.txtLog.text = "解析完成";
 				
 				var plistPngsDiffList:Object = _parserImage.plistPngsDiffList;
-				FileUtils.saveStringToPath(JSON.stringify(plistPngsDiffList), File.applicationStorageDirectory.nativePath +  "/plisDiffList.json");
+				FileUtils.saveStringToPath(JSON.stringify(plistPngsDiffList), File.applicationStorageDirectory.nativePath +  "/check_image/plisDiffList.json");
 				
 				var ccbPngsList:Object = _parserCCB.ccbPngsList;
-				FileUtils.saveStringToPath(JSON.stringify(ccbPngsList), File.applicationStorageDirectory.nativePath +  "/ccbPngsList.json");
+				FileUtils.saveStringToPath(JSON.stringify(ccbPngsList), File.applicationStorageDirectory.nativePath +  "/check_image/ccbPngsList.json");
 				
 				var plistPngsList:Object = _parserImage.plistPngsList;
-				FileUtils.saveStringToPath(JSON.stringify(plistPngsList), File.applicationStorageDirectory.nativePath +  "/plistPngsList.json");
+				FileUtils.saveStringToPath(JSON.stringify(plistPngsList), File.applicationStorageDirectory.nativePath +  "/check_image/plistPngsList.json");
 				
 				var pngsErrList:Object = _parserImage.pngsErrList;
-				FileUtils.saveStringToPath(JSON.stringify(pngsErrList), File.applicationStorageDirectory.nativePath +  "/pngsErrList.json");
+				FileUtils.saveStringToPath(JSON.stringify(pngsErrList), File.applicationStorageDirectory.nativePath +  "/check_image/pngsErrList.json");
 				
 				var codePngsList:Object = _parserImage.codePngsList;
-				FileUtils.saveStringToPath(JSON.stringify(codePngsList), File.applicationStorageDirectory.nativePath +  "/codePngsList.json");
+				FileUtils.saveStringToPath(JSON.stringify(codePngsList), File.applicationStorageDirectory.nativePath +  "/check_image/codePngsList.json");
 				
 				updatePlistListData(plistPngsDiffList);
 				updateCCBData(ccbPngsList);
@@ -374,7 +386,7 @@ package core.mediator
 		private function startParserImage():void
 		{
 			view.btnParser.enabled = false;
-			view.btnSaveDiffPngs.enabled = false;
+			view.btnSaveFile.enabled = false;
 			view.btnParserHistory.enabled = false;
 			view.txtLog.text = "正在检查文件...";
 			

@@ -26,8 +26,6 @@ package core.mediator
 		{
 			super.initialize();
 			
-			view.btnSyncLua.addEventListener(MouseEvent.CLICK, onViewBtnSyncLua);
-			view.btnImageStatistics.addEventListener(MouseEvent.CLICK, onViewImageStatistics);
 			view.addEventListener(MouseEvent.CLICK, onViewClick);
 		}
 		
@@ -35,24 +33,26 @@ package core.mediator
 		{
 			if (evt.target == view.btnMultiLangKey)
 			{
-				var subView:MultiLangueKeyView = new MultiLangueKeyView();
-				subView.addEventListener(Event.ADDED_TO_STAGE, onSubViewAddToStage);
-				subView.show(view.parent as Group);
+				var subView1:MultiLangueKeyView = new MultiLangueKeyView();
+				subView1.addEventListener(Event.ADDED_TO_STAGE, onSubViewAddToStage);
+				subView1.show(view.parent as Group);
 			}
-		}
-		
-		private function onViewBtnSyncLua(evt:MouseEvent):void
-		{
-			var subView:SimulatorDirView = new SimulatorDirView();
-			subView.addEventListener(Event.ADDED_TO_STAGE, onSubViewAddToStage);
-			subView.show(view.parent as Group);
-		}
-		
-		private function onViewImageStatistics(evt:MouseEvent):void
-		{
-			var subView:ImageStatisticsView = new ImageStatisticsView();
-			subView.addEventListener(Event.ADDED_TO_STAGE, onSubViewAddToStage);
-			subView.show(view.parent as Group);
+			else if (evt.target == view.btnSimulatorDir)
+			{
+				var subView2:SimulatorDirView = new SimulatorDirView();
+				subView2.addEventListener(Event.ADDED_TO_STAGE, onSubViewAddToStage);
+				subView2.show(view.parent as Group);
+			}
+			else if (evt.target == view.btnSyncLua)
+			{
+				
+			}
+			else if (evt.target == view.btnImageStatistics)
+			{
+				var subView4:ImageStatisticsView = new ImageStatisticsView();
+				subView4.addEventListener(Event.ADDED_TO_STAGE, onSubViewAddToStage);
+				subView4.show(view.parent as Group);
+			}
 		}
 		
 		private function onSubViewAddToStage(evt:Event):void
@@ -74,8 +74,6 @@ package core.mediator
 		
 		override public function destroy():void
 		{
-			view.btnSyncLua.removeEventListener(MouseEvent.CLICK, onViewBtnSyncLua);
-			view.btnImageStatistics.removeEventListener(MouseEvent.CLICK, onViewImageStatistics);
 			view.removeEventListener(MouseEvent.CLICK, onViewClick);
 			
 			super.destroy();

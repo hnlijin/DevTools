@@ -56,8 +56,9 @@ package utils.parser
 		
 		public function stopParser():void
 		{
-			clearTimeout(_timerId);
 			_locked = false;
+			
+			clearTimeout(_timerId);
 			_parserIndex = 0;
 		}
 		
@@ -96,7 +97,7 @@ package utils.parser
 			if (file != null)
 			{
 				var extension:String = file.extension;
-				if (extension == "cpp" || extension == "mm" || extension == "m" || extension == "lua")
+				if (extension == "cpp" || extension == "mm" || extension == "m" || extension == "lua" || extension == "java")
 				{
 					return true;
 				}

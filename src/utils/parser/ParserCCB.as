@@ -28,8 +28,9 @@ package utils.parser
 		
 		public function stopParser():void
 		{
-			clearTimeout(_timerId);
 			_locked = false;
+			
+			clearTimeout(_timerId);
 			_parserIndex = 0;
 		}
 
@@ -49,6 +50,7 @@ package utils.parser
 				var file:File = File.applicationDirectory.resolvePath(path);
 				if (file.exists == false)
 				{
+					stopParser();
 					dispatchEvent(new DataEvent("parser_error", false, false, "路径不存在: " + path));
 					break;
 				}
