@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<suppotClass:_BaseView xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:suppotClass="core.suppotClass.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			public var luaListData:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var luaSelectedListData:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var listDataSimulatorDir:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var listDataSimulatorIds:ArrayCollection = new ArrayCollection();
+			
+			protected function listCheck_changeHandler(event:IndexChangeEvent):void
+			{
+				if (event.newIndex > 0)
+				{
+					var list:List = event.target as List;
+					var itemData:Object = list.dataProvider[event.newIndex];
+					txtLog.text = itemData.label != "" ? itemData.label : itemData.toString();
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" gap="0">
+		<s:HGroup top="0">
+			<s:Button id="btnClose" label="返回"/>
+			<s:Button id="btnSettingPath" label="显示设置目录"/>
+		</s:HGroup>
+		<s:VGroup id="groupPath" width="100%" visible="false" scaleY="0">
+			<s:Line width="100%"/>
+			<mx:HRule width="100%"/>
+			<s:HGroup width="100%" height="25">
+				<s:TextArea text="设置代码Script目录:" width="120" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:ComboBox id="txtCodeScriptPath" width="100%"/>
+				<s:TextArea id="txtCodeScriptPathTip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
+				<s:Button id="btnCodeScriptPath" label="添加目录"/>
+				<s:Button id="btnOpenCodeScriptPath" label="打开目录"/>
+				<s:Button id="btnDelCodeScriptPath" label="删除选择目录"/>
+			</s:HGroup>
+			<s:HGroup width="100%" height="25">
+				<s:TextArea text="设置SVNScript目录:" width="120" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:ComboBox id="txtSvnScriptPath" width="100%"/>
+				<s:TextArea id="txtSvnScriptPathTip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
+				<s:Button id="btnSvnScriptPath" label="添加路径"/>
+				<s:Button id="btnOpenSvnScriptPath" label="打开路径"/>
+				<s:Button id="btnDelSvnScriptPath" label="删除选择路径"/>
+			</s:HGroup>
+		</s:VGroup>
+		<s:Line width="100%" height="5"/>
+		<mx:HRule width="100%"/>
+		<s:Line width="100%" height="5"/>
+		<s:TabBar dataProvider="{myViewStack}"/> 
+		<mx:ViewStack id="myViewStack" width="100%" height="100%"> 
+			<s:NavigatorContent label="压缩LUA" width="100%" height="100%"> 
+				<s:HGroup width="100%" height="100%" gap="0">
+					<s:List selectedIndex="0" dataProvider="{luaListData}" itemRenderer="FileSelectedItemRenderer" change="listCheck_changeHandler(event)" width="40%" height="100%"/>
+					<s:VGroup width="100%" height="100%" gap="0">
+						<s:List selectedIndex="0" dataProvider="{luaSelectedListData}" change="listCheck_changeHandler(event)" width="100%" height="100%"/>
+						<s:HGroup width="100%">
+							<s:Button id="btnSelectedAll" label="全选"/>
+							<s:Button id="btnUnSelectedAll" label="取消选择"/>
+							<s:Button id="btnZip" label="压缩"/>
+							<s:Button id="btnDelZip" label="删除Zip"/>
+							<s:Button id="btnSyncToSvn" label="同步Zip到SVN"/>
+						</s:HGroup>
+						<mx:HRule width="100%"/>
+						<s:HGroup width="100%">
+							<s:ComboBox id="deviceComboBox" dataProvider="{listDataSimulatorDir}" selectedIndex="0" width="40%"/>
+							<s:ComboBox id="idsComboxBox" dataProvider="{listDataSimulatorIds}" selectedIndex="0" width="60%"/>
+							<s:Button id="btnRefreshSimulatorDir" label="刷新模拟器目录"/>
+							<s:Button id="btnOpenSimulatorDir" label="打开模拟器目录"/>
+							<s:Button id="btnSyncToSimulatorDir" label="同步到模拟器目录"/>
+						</s:HGroup>
+					</s:VGroup>
+				</s:HGroup>
+			</s:NavigatorContent> 
+		</mx:ViewStack> 
+		<s:TextArea id="txtLog" text="..." editable="false" height="25" width="100%"/>
+	</s:VGroup>
+</suppotClass:_BaseView>

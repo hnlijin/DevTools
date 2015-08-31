@@ -6,11 +6,13 @@ package core
 	import core.mediator.MainMediator;
 	import core.mediator.MultiLangueKeyMediator;
 	import core.mediator.SimulatorDirMediator;
+	import core.mediator.SyncLuaFeatureMediator;
 	import core.model.AppModel;
 	import core.view.ImageStatisticsView;
 	import core.view.MainView;
 	import core.view.MultiLangueKeyView;
 	import core.view.SimulatorDirView;
+	import core.view.SyncLuaFeatureView;
 	
 	import robotlegs.bender.extensions.eventCommandMap.api.IEventCommandMap;
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
@@ -48,7 +50,7 @@ package core
 			mediatorMap.map(core.view.MainView).toMediator(core.mediator.MainMediator);
 			mediatorMap.map(core.view.ImageStatisticsView).toMediator(core.mediator.ImageStatisticsMediator);
 			mediatorMap.map(core.view.MultiLangueKeyView).toMediator(core.mediator.MultiLangueKeyMediator);
-			
+			mediatorMap.map(core.view.SyncLuaFeatureView).toMediator(core.mediator.SyncLuaFeatureMediator);			
 			
 			//controller
 //			commandMap.map(core.events.ModelEvent.PARSED_MODEL_ANIMATION_DATA_CHANGE).toCommand(core.controller.ModelCommand);

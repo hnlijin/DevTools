@@ -73,7 +73,6 @@ package utils
 				zip.add(byteArray, zipFileName, date);
 				fileStream.close();
 			}
-			return;
 		}
 		
 		/**
@@ -157,7 +156,7 @@ package utils
 			var fileList:Array = null;
 			var fileItem:File = null;
 			var data:Object = null;
-			if (file != null && file != null)
+			if (file != null)
 			{
 				fileList = file.getDirectoryListing();
 				for each (fileItem in fileList)
@@ -167,7 +166,7 @@ package utils
 						if (condition == null || condition(fileItem) == true)
 						{
 							data = {};
-							data.fileName = fileItem.name;
+							data.label = fileItem.name;
 							data.selected = false;
 							data.filePath = fileItem.nativePath;
 							data.file = fileItem;

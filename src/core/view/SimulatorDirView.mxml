@@ -6,9 +6,13 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:VGroup width="100%">
-		<s:Button id="btnClose" label="返回"/>
+		<s:HGroup>
+			<s:Button id="btnClose" label="返回"/>
+			<s:Button id="btnRefresh" label="刷新"/>
+		</s:HGroup>
 		<s:ComboBox id="deviceComboBox" width="100%"/>
 		<s:ComboBox id="idsComboxBox" width="100%"/>
+		<s:TextArea id="txtLog" text="..." editable="false" height="50" width="100%" bottom="0"/>
 		<s:Button id="btnOpenFolder" label = "打开目录"/>
 	</s:VGroup>
 </suppotClass:_BaseView>

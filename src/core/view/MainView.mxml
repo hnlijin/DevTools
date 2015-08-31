@@ -8,8 +8,10 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:Button id="btnSimulatorDir" label="模拟器目录" />
-	<s:Button id="btnSyncLua" label="同步LUA" />
-	<s:Button id="btnMultiLangKey" label="多语言统计"/>
-	<s:Button id="btnImageStatistics" label="图片统计" />
+	<s:HGroup width="100%" height="100%">
+		<s:Button id="btnSimulatorDir" label="模拟器目录" height="50" />
+		<s:Button id="btnSyncLua" label="同步LUA" height="50" />
+		<s:Button id="btnMultiLangKey" label="多语言统计" height="50"/>
+		<s:Button id="btnImageStatistics" label="图片统计" height="50"/>
+	</s:HGroup>
 </s:Group>

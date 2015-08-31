@@ -39,14 +39,7 @@ package core.mediator
 			view.deviceComboBox.dataProvider = deviceDataList;
 			view.idsComboxBox.dataProvider = idsDataList;
 			
-			view.deviceComboBox.selectedIndex = 0;
-			view.idsComboxBox.selectedIndex = 0;
-			
-			var checkoutList:Array = [];
-			FileUtils.checkoutDirWithMacOSSimulator(checkoutList);
-			deviceDataList.source = checkoutList;
-			
-			updateIdsComboxBox();
+			updatePaths();
 		}
 		
 		private function onViewClick(evt:MouseEvent):void
@@ -67,10 +60,31 @@ package core.mediator
 					file.nativePath = path;
 					if (file.exists)
 					{
+						view.txtLog.text = path;
 						file.openWithDefaultApplication();
+					}
+					else
+					{
+						view.txtLog.text = "提示：目录不存在，请刷新！";
 					}
 				}
 			}
+			else if (evt.target == view.btnRefresh)
+			{
+				updatePaths();
+			}
+		}
+		
+		private function updatePaths():void
+		{
+			var checkoutList:Array = [];
+			FileUtils.checkoutDirWithMacOSSimulator(checkoutList);
+			deviceDataList.source = checkoutList;
+			
+			view.deviceComboBox.selectedIndex = 0;
+			view.idsComboxBox.selectedIndex = 0;
+			
+			updateIdsComboxBox();
 		}
 		
 		private function onDeviceChange(evt:IndexChangeEvent):void

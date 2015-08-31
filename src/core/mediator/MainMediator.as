@@ -11,6 +11,7 @@ package core.mediator
 	import core.view.MainView;
 	import core.view.MultiLangueKeyView;
 	import core.view.SimulatorDirView;
+	import core.view.SyncLuaFeatureView;
 	
 	public class MainMediator extends _BaseMediator
 	{
@@ -45,7 +46,9 @@ package core.mediator
 			}
 			else if (evt.target == view.btnSyncLua)
 			{
-				
+				var subView3:SyncLuaFeatureView = new SyncLuaFeatureView();
+				subView3.addEventListener(Event.ADDED_TO_STAGE, onSubViewAddToStage);
+				subView3.show(view.parent as Group);
 			}
 			else if (evt.target == view.btnImageStatistics)
 			{

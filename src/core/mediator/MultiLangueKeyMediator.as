@@ -54,6 +54,9 @@ package core.mediator
 			view.txtCodeRootPath.addEventListener(IndexChangeEvent.CHANGE, onPathChangeHandler);
 			view.txtCodeRootPath.textInput.enabled = false;
 			
+			view.txtLangEnPath.addEventListener(IndexChangeEvent.CHANGE, onPathChangeHandler);
+			view.txtLangEnPath.textInput.enabled = false;
+			
 			_multiLanguageParser.addEventListener("parser_item", onParserLog);
 			_multiLanguageParser.addEventListener("parser_error", onParserError);
 			_multiLanguageParser.addEventListener("parser_complete", onParserComplete);
@@ -62,6 +65,23 @@ package core.mediator
 			_fileLangEnPath.addEventListener(Event.SELECT, onFileSelected);
 			
 			updatePaths();
+		}
+		
+		override public function destroy():void
+		{
+			view.removeEventListener(MouseEvent.CLICK, onViewClick);
+			
+			_multiLanguageParser.removeEventListener("parser_item", onParserLog);
+			_multiLanguageParser.removeEventListener("parser_error", onParserLog);
+			_multiLanguageParser.removeEventListener("parser_complete", onParserComplete);
+			
+			view.txtLangEnPath.removeEventListener(IndexChangeEvent.CHANGE, onPathChangeHandler);
+			view.txtCodeRootPath.removeEventListener(IndexChangeEvent.CHANGE, onPathChangeHandler);
+			
+			_fileLangCodeRootPath.removeEventListener(Event.SELECT, onFileSelected);
+			_fileLangEnPath.removeEventListener(Event.SELECT, onFileSelected);
+			
+			super.destroy();
 		}
 		
 		private function onViewClick(evt:MouseEvent):void
@@ -278,6 +298,15 @@ package core.mediator
 				_indexLangCodeRootPath = view.txtCodeRootPath.selectedIndex;
 				
 				LocalDataMananger.getInstance().setLocalData("indexLangCodeRootPath", _indexLangCodeRootPath);
+				LocalDataMananger.getInstance().saveLocalData();
+				
+				updatePaths();
+			}
+			else if (event.target == view.txtLangEnPath)
+			{
+				_indexLangEnPath = view.txtLangEnPath.selectedIndex;
+				
+				LocalDataMananger.getInstance().setLocalData("indexLangEnPath", _indexLangEnPath);
 				LocalDataMananger.getInstance().saveLocalData();
 				
 				updatePaths();
