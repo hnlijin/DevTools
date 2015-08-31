@@ -138,7 +138,7 @@ package utils
 					if (condition == null || condition(fileItem) == true)
 					{
 						data = {};
-						data.fileName = fileItem.name;
+						data.label = fileItem.name;
 						data.selected = false;
 						data.filePath = fileItem.nativePath;
 						data.file = fileItem;

@@ -60,9 +60,27 @@ package core.mediator
 			
 			_fileCodeScriptPath.addEventListener(Event.SELECT, onFileSelected);
 			_fileSvnScriptPath.addEventListener(Event.SELECT, onFileSelected);
+			
+			view.listLuaFeature.addEventListener(IndexChangeEvent.CHANGE, onViewIndexChange);
 
 			updatePaths();
 			updateSimulatorPaths();
+		}
+		
+		override public function destroy():void
+		{
+			view.removeEventListener(MouseEvent.CLICK, onViewClick);
+			view.deviceComboBox.removeEventListener(IndexChangeEvent.CHANGE, onViewIndexChange);
+			
+			view.txtCodeScriptPath.removeEventListener(IndexChangeEvent.CHANGE, onPathChangeHandler);
+			view.txtSvnScriptPath.removeEventListener(IndexChangeEvent.CHANGE, onPathChangeHandler);
+			
+			_fileCodeScriptPath.removeEventListener(Event.SELECT, onFileSelected);
+			_fileSvnScriptPath.removeEventListener(Event.SELECT, onFileSelected);
+			
+			view.listLuaFeature.removeEventListener(IndexChangeEvent.CHANGE, onViewIndexChange);
+			
+			super.destroy();
 		}
 		
 		private function onViewClick(evt:MouseEvent):void
@@ -141,11 +159,47 @@ package core.mediator
 				}
 				view.luaListData.source = _checkoutFeatureList;
 			}
+			else if (evt.target == view.btnSyncToSvn)
+			{
+				if (_fileSvnScriptPath.exists == true)
+				{
+					var len1:int = _checkoutFeatureList.length;
+					var tempSucCount1:int = 0;
+					var tempCount1:int = 0;
+					var tempFile1:File = new File();
+					var tempZipFile1:File = new File();
+					var tempSvnFile1:File = new File();
+					
+					for (var a:int = 0; a < len1; a++)
+					{
+						if (_checkoutFeatureList[a].selected == true)
+						{
+							tempCount1 += 1;
+							
+							tempFile1 = _checkoutFeatureList[a].file as File;
+							tempSvnFile1.nativePath = _fileSvnScriptPath.nativePath + "/" + tempFile1.name + ".zip";
+							tempZipFile1.nativePath = tempFile1.nativePath + ".zip";
+							
+							if (tempZipFile1.exists == true)
+							{
+								tempZipFile1.moveTo(tempSvnFile1, true);
+								tempSucCount1 += 1;
+							}
+						}
+					}
+					
+					view.txtLog.text = "同步到SVN:script目录: 共" + tempCount1 + "个，同步成功" + tempSucCount1 + "个";
+				}
+				else
+				{
+					view.txtLog.text = "提示：请选择SVN:script目录!";
+				}
+			}
 			else if (evt.target == view.btnZip)
 			{
 				var len2:int = _checkoutFeatureList.length;
 				var date:Date = new Date();
-				var tempCount2:int = 0;
+				var tempSucCount2:int = 0;
 				
 				for (var j:int = 0; j < len2; j++)
 				{
@@ -155,38 +209,35 @@ package core.mediator
 						var tempFile:File = _checkoutFeatureList[j].file as File;
 						FileUtils.fileToZip(zip, tempFile, date);
 						FileUtils.saveZip(zip, tempFile.nativePath);
-						tempCount2 += 1;
+						tempSucCount2 += 1;
 					}
 				}
 				
-				if (tempCount2 > 0)
-				{
-					view.txtLog.text = "压缩文件: 成功" + tempCount2 + "个";
-				}
+				view.txtLog.text = "压缩文件: 成功" + tempSucCount2 + "个";
 			}
 			else if (evt.target == view.btnDelZip)
 			{
 				var file:File = new File();
 				var len3:int = _checkoutFeatureList.length;
+				var tempSucCount3:int = 0;
 				var tempCount3:int = 0;
 				
 				for (var k:int = 0; k < len3; k++)
 				{
 					if (_checkoutFeatureList[k].selected == true)
 					{
+						tempCount3 += 1;
+						
 						file.nativePath = _checkoutFeatureList[k].filePath + ".zip";
 						if (file.exists == true)
 						{
 							file.deleteFile();
-							tempCount3 += 1;
+							tempSucCount3 += 1;
 						}
 					}
 				}
 				
-				if (tempCount3 > 0)
-				{
-					view.txtLog.text = "删除Zip文件: 成功" + tempCount3 + "个";
-				}
+				view.txtLog.text = "删除Zip文件: 共" + tempCount3 + "个， 删除成功" + tempSucCount3 + "个";
 			}
 			else if (evt.target == view.btnRefreshSimulatorDir)
 			{
@@ -197,31 +248,29 @@ package core.mediator
 				if (simulatorDirFile == null || simulatorDirFile.exists == false)
 				{
 					view.txtLog.text = "模拟器目录不存在，请刷新模拟器目录!";
-					return;
 				}
-				
-				var scriptFile:File = new File();
-				var len4:int = _checkoutFeatureList.length;
-				var tempFile4:File = null;
-				var tempSucCount4:int = 0;
-				
-				for (var m:int = 0; m < len4; m++)
+				else
 				{
-					if (_checkoutFeatureList[m].selected == true)
+					var scriptFile:File = new File();
+					var len4:int = _checkoutFeatureList.length;
+					var tempFile4:File = null;
+					var tempSucCount4:int = 0;
+					
+					for (var m:int = 0; m < len4; m++)
 					{
-						tempFile4 = _checkoutFeatureList[m].file;
-						if (tempFile4.exists == true)
+						if (_checkoutFeatureList[m].selected == true)
 						{
-							scriptFile.nativePath = simulatorDirFile.nativePath + "/Resources/scripts/" + tempFile4.name;
-							scriptFile.createDirectory();
-							tempFile4.copyTo(scriptFile, true);
-							tempSucCount4 += 1;
+							tempFile4 = _checkoutFeatureList[m].file;
+							if (tempFile4.exists == true)
+							{
+								scriptFile.nativePath = simulatorDirFile.nativePath + "/Resources/scripts/" + tempFile4.name;
+								scriptFile.createDirectory();
+								tempFile4.copyTo(scriptFile, true);
+								tempSucCount4 += 1;
+							}
 						}
 					}
-				}
-				
-				if (tempSucCount4 > 0)
-				{
+					
 					view.txtLog.text = "同步资源到模拟器: 成功" + tempSucCount4 + "个";
 				}
 			}
@@ -230,10 +279,11 @@ package core.mediator
 				if (simulatorDirFile == null || simulatorDirFile.exists == false)
 				{
 					view.txtLog.text = "模拟器目录不存在，请刷新模拟器目录!";
-					return;
 				}
-				
-				simulatorDirFile.openWithDefaultApplication();
+				else
+				{
+					simulatorDirFile.openWithDefaultApplication();
+				}
 			}
 		}
 		
@@ -248,14 +298,16 @@ package core.mediator
 					view.idsComboxBox.selectedIndex = 0;
 				}
 			}
-		}
-		
-		override public function destroy():void
-		{
-			view.removeEventListener(MouseEvent.CLICK, onViewClick);
-			view.deviceComboBox.removeEventListener(IndexChangeEvent.CHANGE, onViewIndexChange);
-			
-			super.destroy();
+			else if (evt.target == view.listLuaFeature)
+			{
+				if (view.listLuaFeature.selectedIndex >= 0)
+				{
+					var featrueData:Object = view.luaListData[view.listLuaFeature.selectedIndex];
+					var checkoutList:Array = [];
+					FileUtils.recursiveCheckoutFile(featrueData.file, checkoutList, "");
+					view.luaSelectedListData.source = checkoutList;
+				}
+			}
 		}
 		
 		private function get simulatorDirFile():File

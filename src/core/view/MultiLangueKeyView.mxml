@@ -45,20 +45,20 @@
 			<s:Line width="100%"/>
 			<mx:HRule width="100%"/>
 			<s:HGroup width="100%" height="25">
-				<s:TextArea text="设置代码根目录:" width="100" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:TextArea text="代码根目录:" width="85" editable="false" borderVisible="false" height="100%" textAlign="right"/>
 				<s:ComboBox id="txtCodeRootPath" width="100%"/>
 				<s:TextArea id="txtCodeRootPathTip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
 				<s:Button id="btnCodeRootPath" label="添加目录"/>
 				<s:Button id="btnOpenCodeRootPath" label="打开目录"/>
-				<s:Button id="btnDelCodeRootPath" label="删除选择目录"/>
+				<s:Button id="btnDelCodeRootPath" label="删除目录"/>
 			</s:HGroup>
 			<s:HGroup width="100%" height="25">
-				<s:TextArea text="设置en.plist路径:" width="100" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:TextArea text="en.plist路径:" width="85" editable="false" borderVisible="false" height="100%" textAlign="right"/>
 				<s:ComboBox id="txtLangEnPath" width="100%"/>
 				<s:TextArea id="txtLangEnPathTip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
 				<s:Button id="btnLangEnPath" label="添加路径"/>
 				<s:Button id="btnOpenLaneEnPath" label="打开路径"/>
-				<s:Button id="btnDelLangEnPath" label="删除选择路径"/>
+				<s:Button id="btnDelLangEnPath" label="删除路径"/>
 			</s:HGroup>
 		</s:VGroup>
 		<s:Line width="100%" height="5"/>

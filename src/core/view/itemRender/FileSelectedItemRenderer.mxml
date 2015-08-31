@@ -12,6 +12,9 @@
 				
 				checkBox.selected = data.selected;
 				checkBox.label = data.label;
+				
+				var file:File = data.file;
+				
 			}
 
 			protected function itemClickHandler(event:MouseEvent):void

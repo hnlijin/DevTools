@@ -92,30 +92,30 @@
 			<s:Line width="100%"/>
 			<mx:HRule width="100%"/>
 			<s:HGroup width="100%" height="25">
-				<s:TextArea text="设置代码根目录:" width="160" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:TextArea text="代码根目录:" width="140" editable="false" borderVisible="false" height="100%" textAlign="right"/>
 				<s:ComboBox id="txtCodeRootPath" width="100%"/>
 				<s:TextArea id="txtCodeRootPathTip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
 				<s:Button id="btnCodeRootPath" label="添加目录"/>
 				<s:Button id="btnOpenCodeRootPath" label="打开目录"/>
-				<s:Button id="btnDelCodeRootPath" label="删除选择目录"/>
+				<s:Button id="btnDelCodeRootPath" label="删除目录"/>
 			</s:HGroup>
 			<mx:HRule width="100%"/>
 			<s:HGroup width="100%" height="25">
-				<s:TextArea text="设置CCB iPhone目录:" width="160" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:TextArea text="CCB iPhone目录:" width="140" editable="false" borderVisible="false" height="100%" textAlign="right"/>
 				<s:ComboBox id="txtCCBRootPath1" width="100%"/>
 				<s:TextArea id="txtCCBRootPath1Tip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
 				<s:Button id="btnCCBRootPath1" label="添加目录"/>
 				<s:Button id="btnOpenCCBRootPath1" label="打开目录"/>
-				<s:Button id="btnDelCCBRootPath1" label="删除选择目录"/>
+				<s:Button id="btnDelCCBRootPath1" label="删除目录"/>
 			</s:HGroup>
 			<mx:HRule width="100%"/>
 			<s:HGroup width="100%" height="25">
-				<s:TextArea text="设置LUA CCB iPhone目录:" width="160" editable="false" borderVisible="false" height="100%" textAlign="right"/>
+				<s:TextArea text="LUA CCB iPhone目录:" width="140" editable="false" borderVisible="false" height="100%" textAlign="right"/>
 				<s:ComboBox id="txtCCBRootPath2" width="100%"/>
 				<s:TextArea id="txtCCBRootPath2Tip" editable="false" textAlign="center" borderVisible="false" text="" width="80" height="100%"/>
 				<s:Button id="btnCCBRootPath2" label="添加目录"/>
 				<s:Button id="btnOpenCCBRootPath2" label="打开目录"/>
-				<s:Button id="btnDelCCBRootPath2" label="删除选择目录"/>
+				<s:Button id="btnDelCCBRootPath2" label="删除目录"/>
 			</s:HGroup>
 		</s:VGroup>
 		<s:Line width="100%" height="5"/>
